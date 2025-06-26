@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Travel Explorer</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -71,6 +70,11 @@
       padding: 10px;
       width: 300px;
       border-radius: 8px;
+      transition: transform 0.2s;
+    }
+
+    .card:hover {
+      transform: scale(1.03);
     }
 
     .card img {
@@ -92,6 +96,12 @@
       background: #333;
       color: white;
     }
+
+    #no-results {
+      margin-top: 20px;
+      font-weight: bold;
+      color: #d32f2f;
+    }
   </style>
 </head>
 <body>
@@ -109,29 +119,14 @@
 <section class="hero">
   <h2>Discover Your Next Adventure</h2>
   <p>Find the best destinations and plan your perfect trip!</p>
-  <input type="text" id="search" placeholder="Search destinations...">
-  <button onclick="searchDestinations()">Search</button>
+  <input type="text" id="search" placeholder="Search destinations..." oninput="renderCards()">
+  <button onclick="renderCards()">Search</button>
 </section>
 
 <section class="featured" id="featured">
   <h3>Popular Destinations</h3>
-  <div class="cards">
-    <div class="card">
-      <img src="https://source.unsplash.com/300x200/?paris" alt="Paris">
-      <h4>Paris</h4>
-      <p>City of lights and love.</p>
-    </div>
-    <div class="card">
-      <img src="https://source.unsplash.com/300x200/?maldives" alt="Maldives">
-      <h4>Maldives</h4>
-      <p>White sands and clear waters.</p>
-    </div>
-    <div class="card">
-      <img src="https://source.unsplash.com/300x200/?tokyo" alt="Tokyo">
-      <h4>Tokyo</h4>
-      <p>Experience modern meets tradition.</p>
-    </div>
-  </div>
+  <div class="cards" id="destinationCards"></div>
+  <p id="no-results" style="display:none;">No destinations found.</p>
 </section>
 
 <footer>
@@ -139,14 +134,69 @@
 </footer>
 
 <script>
-  function searchDestinations() {
-    const query = document.getElementById("search").value.toLowerCase();
-    if (!query) {
-      alert("Please enter a destination to search.");
-    } else {
-      alert("Searching for: " + query + " (this can be expanded with backend later).");
+  const destinations = [
+    {
+      name: "Paris",
+      image: "https://source.unsplash.com/300x200/?paris",
+      description: "City of lights and love."
+    },
+    {
+      name: "Maldives",
+      image: "https://source.unsplash.com/300x200/?maldives",
+      description: "White sands and clear waters."
+    },
+    {
+      name: "Tokyo",
+      image: "https://source.unsplash.com/300x200/?tokyo",
+      description: "Experience modern meets tradition."
+    },
+    {
+      name: "New York",
+      image: "https://source.unsplash.com/300x200/?newyork",
+      description: "The city that never sleeps."
+    },
+    {
+      name: "Dubai",
+      image: "https://source.unsplash.com/300x200/?dubai",
+      description: "Luxury, innovation, and desert beauty."
+    },
+    {
+      name: "Rome",
+      image: "https://source.unsplash.com/300x200/?rome",
+      description: "Where history comes alive."
     }
+  ];
+
+  function renderCards() {
+    const query = document.getElementById("search").value.toLowerCase();
+    const container = document.getElementById("destinationCards");
+    const noResults = document.getElementById("no-results");
+
+    container.innerHTML = "";
+
+    const filtered = destinations.filter(d => d.name.toLowerCase().includes(query));
+
+    if (filtered.length === 0) {
+      noResults.style.display = "block";
+      return;
+    }
+
+    noResults.style.display = "none";
+
+    filtered.forEach(dest => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <img src="${dest.image}" alt="${dest.name}">
+        <h4>${dest.name}</h4>
+        <p>${dest.description}</p>
+      `;
+      container.appendChild(card);
+    });
   }
+
+  // Initial load
+  renderCards();
 </script>
 
 </body>
